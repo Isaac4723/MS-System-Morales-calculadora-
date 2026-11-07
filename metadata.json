@@ -1,0 +1,6 @@
+{
+  "name": "Calculadora BCV & Margen de Ganancia",
+  "description": "Calculadora de cambio de Bolívares a Dólares en tiempo real con tasa oficial del Banco Central de Venezuela (BCV), estimador de precios de venta con margen de ganancia automático y envío de cotizaciones por WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
