@@ -1,6 +1,7 @@
 import React from 'react';
-import { RefreshCw, Sun, Moon, Sliders, ArrowLeftRight, TrendingUp, Store, FileText, History } from 'lucide-react';
+import { RefreshCw, Sun, Moon, Sliders, ArrowLeftRight, TrendingUp, Store, FileText, History, RotateCcw } from 'lucide-react';
 import { ExchangeRateData } from '../types';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderProps {
   activeTab: 'converter' | 'pricing' | 'commerce' | 'quotes' | 'history';
@@ -11,6 +12,7 @@ interface HeaderProps {
   isLoadingRate: boolean;
   onRefreshRate: () => void;
   onOpenManualRate: () => void;
+  onResetAllData?: () => void;
   quotesCount: number;
 }
 
@@ -23,6 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
   isLoadingRate,
   onRefreshRate,
   onOpenManualRate,
+  onResetAllData,
   quotesCount,
 }) => {
   return (
@@ -55,7 +58,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <Store className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>Comercios MS Morales</span>
+              <span>Comercios & CxC</span>
             </button>
             <button
               onClick={() => setActiveTab('pricing')}
@@ -135,6 +138,21 @@ export const Header: React.FC<HeaderProps> = ({
               <RefreshCw className={`w-4 h-4 ${isLoadingRate ? 'animate-spin text-emerald-600' : ''}`} />
             </button>
 
+            {/* PWA Install Button */}
+            <PWAInstallButton />
+
+            {/* Reset Data to zero button */}
+            {onResetAllData && (
+              <button
+                onClick={onResetAllData}
+                type="button"
+                title="Limpiar y restablecer base de datos local a cero"
+                className="p-2 rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            )}
+
             {/* Dark / Light Mode Toggle */}
             <button
               onClick={toggleTheme}
@@ -157,7 +175,7 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             <Store className="w-4 h-4 mb-0.5" />
-            <span>Comercios</span>
+            <span>Comercios & CxC</span>
           </button>
           <button
             onClick={() => setActiveTab('pricing')}

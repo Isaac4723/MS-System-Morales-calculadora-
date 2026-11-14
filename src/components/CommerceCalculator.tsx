@@ -13,10 +13,13 @@ import {
   Receipt,
   RotateCcw,
   Sparkles,
-  Sliders
+  Sliders,
+  UserCheck,
 } from 'lucide-react';
 import { CommerceStoreInfo, ExchangeRateData, PosSaleData } from '../types';
 import { formatUsd, formatVes, generateCommerceReceiptMessage, parseFlexibleNumber } from '../utils/formatters';
+import { AccountsReceivable } from './AccountsReceivable';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface CommerceCalculatorProps {
   rateData: ExchangeRateData | null;
@@ -26,12 +29,12 @@ interface CommerceCalculatorProps {
 
 const DEFAULT_STORE: CommerceStoreInfo = {
   storeName: 'MS Morales System Soluciones',
-  rif: 'J-50123456-7',
-  phone: '0414-1234567',
+  rif: '',
+  phone: '',
   bankName: 'Banesco / Banco de Venezuela',
-  pagoMovilPhone: '04141234567',
-  pagoMovilId: 'V-12345678',
-  address: 'Venezuela',
+  pagoMovilPhone: '',
+  pagoMovilId: '',
+  address: '',
 };
 
 export const CommerceCalculator: React.FC<CommerceCalculatorProps> = ({
@@ -50,9 +53,10 @@ export const CommerceCalculator: React.FC<CommerceCalculatorProps> = ({
   });
 
   const [isEditingStore, setIsEditingStore] = useState<boolean>(false);
+  const [commerceSubTab, setCommerceSubTab] = useState<'cxc' | 'pos'>('cxc');
 
   // Sale transaction state
-  const [saleTotalInput, setSaleTotalInput] = useState<string>('25');
+  const [saleTotalInput, setSaleTotalInput] = useState<string>('0');
   const [saleCurrency, setSaleCurrency] = useState<'USD' | 'VES'>('USD');
   const [clientName, setClientName] = useState<string>('');
   const [referenceNumber, setReferenceNumber] = useState<string>('');
@@ -272,7 +276,47 @@ export const CommerceCalculator: React.FC<CommerceCalculatorProps> = ({
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* PWA Install Guide Banner */}
+      <PWAInstallButton variant="banner" />
+
+      {/* Commerce Sub-navigation Tabs */}
+      <div className="flex items-center gap-2 p-1.5 bg-neutral-200/60 dark:bg-neutral-800/80 rounded-xl max-w-xl">
+        <button
+          type="button"
+          onClick={() => setCommerceSubTab('cxc')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold rounded-lg transition-all ${
+            commerceSubTab === 'cxc'
+              ? 'bg-white dark:bg-neutral-700 text-emerald-700 dark:text-emerald-300 shadow-xs'
+              : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white'
+          }`}
+        >
+          <UserCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>Cuentas por Cobrar & Abonos (CxC)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setCommerceSubTab('pos')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs font-bold rounded-lg transition-all ${
+            commerceSubTab === 'pos'
+              ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
+              : 'text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white'
+          }`}
+        >
+          <Store className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+          <span>Caja & Vuelto Bimonetario</span>
+        </button>
+      </div>
+
+      {commerceSubTab === 'cxc' ? (
+        <AccountsReceivable
+          rateData={rateData}
+          effectiveRate={effectiveRate}
+          store={store}
+          onOpenWhatsApp={onOpenWhatsApp}
+        />
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Register POS Input (7 cols) */}
         <div className="lg:col-span-7 space-y-5">
           <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 sm:p-7 shadow-xs space-y-5">
@@ -592,6 +636,7 @@ export const CommerceCalculator: React.FC<CommerceCalculatorProps> = ({
           </div>
         </div>
       </div>
-    </div>
-  );
+    )}
+  </div>
+);
 };
